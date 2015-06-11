@@ -1,0 +1,65 @@
+<span class="hljs-header">Hello, World!
+============</span>
+Author Name, &lt;author@domain.foo&gt;
+
+you can write text <span class="hljs-link_url">http://example.com</span>[<span class="hljs-link_label">with links</span>], optionally
+using an explicit link:<span class="hljs-link_url">http://example.com</span>[<span class="hljs-link_label">link prefix</span>].
+
+<span class="hljs-bullet">* </span>single quotes around a phrase place <span class="hljs-emphasis">'emphasis'</span>
+<span class="hljs-bullet">** </span>alternatively, you can put underlines around a phrase to add <span class="hljs-emphasis">_emphasis_</span>
+<span class="hljs-bullet">* </span>astericks around a phrase make the text <span class="hljs-strong">*bold*</span>
+<span class="hljs-bullet">* </span>pluses around a phrase make it <span class="hljs-code">+monospaced+</span>
+<span class="hljs-bullet">* </span><span class="hljs-smartquote">`smart'</span> quotes using a leading backtick and trailing single quote
+<span class="hljs-bullet">** </span>use two of each for double <span class="hljs-smartquote">``smart''</span> quotes
+
+<span class="hljs-bullet">- </span>escape characters are supported
+<span class="hljs-bullet">- </span>you can escape a quote inside emphasized text like <span class="hljs-emphasis">'here\'s johnny!'</span>
+
+<span class="hljs-bullet">term:: </span>definition
+<span class="hljs-bullet"> another term:: </span>another definition
+
+<span class="hljs-comment">// this is just a comment</span>
+
+Let's make a break.
+
+<span class="hljs-horizontal_rule">'''</span>
+
+<span class="hljs-comment">////
+we'll be right with you
+
+after this brief interruption.
+////</span>
+
+<span class="hljs-header">== We're back!</span>
+
+Want to see a image::<span class="hljs-link_url">images/tiger.png</span>[<span class="hljs-link_label">Tiger</span>]?
+
+<span class="hljs-title">.Nested highlighting</span>
+++++
+<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-title">this_is</span> <span class="hljs-attribute">inline</span>=<span class="hljs-value">"xml"</span>&gt;</span></span><span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-title">this_is</span>&gt;</span></span>
+++++
+
+<span class="hljs-blockquote">____
+asciidoc is so powerful.
+____</span>
+
+another quote:
+
+<span class="hljs-attribute">[quote, Sir Arthur Conan Doyle, The Adventures of Sherlock Holmes]</span>
+<span class="hljs-blockquote">____
+When you have eliminated all which is impossible, then whatever remains, however improbable, must be the truth.
+____</span>
+
+<span class="hljs-header">Getting Literal
+---------------</span>
+
+<span class="hljs-code"> want to get literal? prefix a line with a space.</span>
+
+<span class="hljs-code">....
+I'll join that party, too.
+....</span>
+
+<span class="hljs-bullet">. </span>one thing (yeah!)
+<span class="hljs-bullet">. </span>two thing <span class="hljs-code">`i can write code`</span>, and <span class="hljs-code">`more`</span> wipee!
+
+<span class="hljs-label">NOTE: </span>AsciiDoc is quite cool, you should try it.

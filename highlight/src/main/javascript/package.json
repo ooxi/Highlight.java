@@ -1,0 +1,16 @@
+{	"name":		"Highlight.java",
+	"version":	"0.0.1",
+	
+	"description":	"Mock package requiring `highlight.js' used by the java port",
+	"license":	"Zlib",
+	
+	"dependencies": {
+		"highlight.js":	"8.6.0"
+	},
+	
+	"devDependencies": {
+		"amdclean":	"2.7.0",
+		"requirejs":	"2.1.18",
+		"gulp":		"3.9.0"
+	}
+}

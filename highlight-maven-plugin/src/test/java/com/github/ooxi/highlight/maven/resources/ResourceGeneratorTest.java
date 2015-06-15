@@ -24,13 +24,11 @@
 package com.github.ooxi.highlight.maven.resources;
 
 import static com.github.ooxi.highlight.maven.FileSubjectFactory.FILES;
-import com.github.ooxi.highlight.maven.HighlightResource;
-import com.google.common.collect.ImmutableList;
 import com.google.common.io.Files;
 import static com.google.common.truth.Truth.assert_;
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
+import java.util.stream.Stream;
 import org.junit.Test;
 
 /**
@@ -45,11 +43,11 @@ public class ResourceGeneratorTest {
 		/* Prepare resources and resource generator
 		 */
 		final HighlightResource first = HighlightResource.of(
-			ResourceGeneratorTest.class.getResource("first-resource"),
+			ResourceGeneratorTest.class.getResource("first-resource")::openStream,
 			"directory/first"
 		);
 		final HighlightResource second = HighlightResource.of(
-			ResourceGeneratorTest.class.getResource("second-resource"),
+			ResourceGeneratorTest.class.getResource("second-resource")::openStream,
 			"second"
 		);
 		
@@ -61,8 +59,8 @@ public class ResourceGeneratorTest {
 			}
 
 			@Override
-			protected Collection<HighlightResource> getResources() throws IOException {
-				return ImmutableList.of(first, second);
+			protected Stream<HighlightResource> getResources() {
+				return Stream.of(first, second);
 			}
 			
 		};

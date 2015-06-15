@@ -23,7 +23,7 @@
  */
 package com.github.ooxi.highlight;
 
-import static com.google.common.base.Preconditions.checkState;
+import static com.github.ooxi.highlight.Guava.Preconditions.checkState;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;

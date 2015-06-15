@@ -23,14 +23,14 @@
  */
 package com.github.ooxi.highlight.maven.resources;
 
-import com.github.ooxi.highlight.maven.HighlightResource;
+import com.github.ooxi.highlight.maven.ResourceMojo;
 import com.google.common.io.ByteStreams;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Collection;
+import java.util.stream.Stream;
 
 /**
  * Writes the content of `HighlightResource' instance into a directory relative
@@ -38,7 +38,7 @@ import java.util.Collection;
  * 
  * @author ooxi
  */
-abstract class ResourceGenerator {
+abstract class ResourceGenerator implements ResourceMojo.Generator {
 	
 	/**
 	 * @return Base path of resource which should be ignored, e.g. a base
@@ -54,7 +54,7 @@ abstract class ResourceGenerator {
 	 * @return Resources to be written
 	 * @throws IOException iff resources cannot be loaded
 	 */
-	protected abstract Collection<HighlightResource> getResources() throws IOException;
+	protected abstract Stream<HighlightResource> getResources();
 	
 	
 	
@@ -65,9 +65,10 @@ abstract class ResourceGenerator {
 	 * 
 	 * @param directory Directory where resources should be written into
 	 */
-	public void generate(File directory) throws IOException {
+	@Override
+	public void generate(File directory) {
 		getResources().forEach(resource -> {
-			String path = resource.getPath();
+			final String path = resource.getPath();
 			
 			File file = new File(directory, path);
 			File parent = file.getParentFile();
@@ -78,13 +79,13 @@ abstract class ResourceGenerator {
 				}
 			}
 			
-			try (	InputStream is = resource.getUrl().openStream();
+			try (	InputStream is = resource.openStream();
 				OutputStream os = new FileOutputStream(file);
 			) {
 				ByteStreams.copy(is, os);
 				
 			} catch (IOException e) {
-				throw new ResourceGeneratorException("Failed writing `"+ resource.getUrl() +"' to `"+ file.getAbsolutePath() +"'");
+				throw new ResourceGeneratorException("Failed writing `"+ path +"' to `"+ file.getAbsolutePath() +"'");
 			}
 		});
 	}

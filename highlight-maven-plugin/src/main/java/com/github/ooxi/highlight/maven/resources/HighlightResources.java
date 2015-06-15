@@ -21,7 +21,7 @@
  * 
  *  3. This notice may not be removed or altered from any source distribution.
  */
-package com.github.ooxi.highlight.maven;
+package com.github.ooxi.highlight.maven.resources;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
@@ -50,19 +50,19 @@ public final class HighlightResources {
 	
 	
 	
-	public static ImmutableSet<HighlightResource> getJavaScriptResources() throws IOException {
+	public static ImmutableSet<HighlightResource> getJavaScriptResources() {
 		checkNotNull(hljsJavaScript, "Cannot find JavaScript resource list");
 		return getResources(hljsJavaScript);
 	}
 	
 	
-	public static ImmutableSet<HighlightResource> getLanguageResources() throws IOException {
+	public static ImmutableSet<HighlightResource> getLanguageResources() {
 		checkNotNull(hljsLanguage, "Cannot find language resource list");
 		return getResources(hljsLanguage);
 	}
 	
 	
-	public static ImmutableSet<HighlightResource> getStylesheetResources() throws IOException {
+	public static ImmutableSet<HighlightResource> getStylesheetResources() {
 		checkNotNull(hljsStylesheet, "Cannot find Stylesheet resource list");
 		return getResources(hljsStylesheet);
 	}
@@ -77,7 +77,7 @@ public final class HighlightResources {
 	 * 
 	 * @throws IOException If reading the resource json went wrong
 	 */
-	private static ImmutableSet<HighlightResource> getResources(URL resourceJson) throws IOException {
+	private static ImmutableSet<HighlightResource> getResources(URL resourceJson) {
 		ImmutableSet.Builder<HighlightResource> resources = ImmutableSet.<HighlightResource>builder();
 		
 		try (	Reader reader = new InputStreamReader(resourceJson.openStream(), "UTF-8");
@@ -94,11 +94,20 @@ public final class HighlightResources {
 				final URL url = HighlightResources.class.getResource("/"+ absolute.getString());
 				final String path = relative.getString();
 				
-				resources.add(HighlightResource.of(url, path));
+				resources.add(HighlightResource.of(url::openStream, path));
 			});
+		} catch (IOException e) {
+			throw new ResourceGeneratorException("Cannot load resources from `"+ resourceJson +"'", e);
 		}
 		
 		return resources.build();
 	}
 
+	
+	
+	
+	
+	private HighlightResources() {
+		throw new AssertionError();
+	}
 }

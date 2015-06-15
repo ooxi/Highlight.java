@@ -39,7 +39,7 @@ public class SourceGeneratorTest {
 	@Test
 	public void testLanguagesGenerator() throws IOException, JClassAlreadyExistsException {
 		JCodeModel model = new JCodeModel();
-		new LanguagesSourceGenerator(model).generate("com.example");
+		new LanguagesSourceGenerator(model, "com.example").generate();
 		
 		JDefinedClass interfaceModel = model._getClass("com.example.Language");
 		JDefinedClass implementationModel = model._getClass("com.example.LanguageImpl");
@@ -58,7 +58,7 @@ public class SourceGeneratorTest {
 	@Test
 	public void testStylesheetsGenerator() throws IOException, JClassAlreadyExistsException {
 		JCodeModel model = new JCodeModel();
-		new StylesheetsSourceGenerator(model).generate("com.example");
+		new StylesheetsSourceGenerator(model, "com.example").generate();
 		
 		JDefinedClass interfaceModel = model._getClass("com.example.Stylesheet");
 		JDefinedClass implementationModel = model._getClass("com.example.StylesheetImpl");

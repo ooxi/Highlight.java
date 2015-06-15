@@ -21,46 +21,50 @@
  * 
  *  3. This notice may not be removed or altered from any source distribution.
  */
-package com.github.ooxi.highlight.maven;
+package com.github.ooxi.highlight.maven.testsources;
 
-import org.apache.maven.plugin.AbstractMojo;
+import com.github.ooxi.highlight.maven.SourceMojo;
+import com.google.common.collect.ImmutableList;
+import com.sun.codemodel.JClassAlreadyExistsException;
+import java.io.File;
+import java.io.IOException;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.project.MavenProject;
 
 /**
- *
+ * Generates test cases for all highlighted languages.
+ * 
  * @author ooxi
  */
 @Mojo(name = "generate-test-sources", defaultPhase = LifecyclePhase.GENERATE_TEST_SOURCES)
-public final class GenerateTestSourcesMojo extends AbstractMojo {
+public final class GenerateTestSourcesMojo extends SourceMojo {
 	
-	@Parameter(property = "project", readonly = true, required = true)
-	private MavenProject project;
+	@Parameter(alias = "generated-test-sources-directory", defaultValue="${project.build.directory}/generated-test-sources/highlight", required = true)
+	private File sourceDirectory;
 	
-	@Parameter(alias = "package", required = true)
-	private String pkg;
-	
-//	@Parameter(alias = "resourceDirectory", required = true)
-//	private File resourceDirectory;
+	public GenerateTestSourcesMojo() {
+		super(ImmutableList.of(
+			LanguageTestSourceGenerator::new
+		));
+	}
 
 	
 	
 	@Override
 	public void execute() throws MojoExecutionException {
-		getLog().warn(getClass().getName());
-		
 		try {
+			createSource(sourceDirectory);
 			
-//			/* XXX
-//			 */
-//			project.addResource(resource);
-//			project.addCompileSourceRoot(resourceDirectory.getAbsolutePath());
+			/* Add directory with generated sources to compile
+			 * source root
+			 */
+			project.addTestCompileSourceRoot(sourceDirectory.getAbsolutePath());
 
-		} catch (Exception e) {
-			throw new MojoExecutionException("Failed generating resources", e);
+		
+		} catch (IOException | JClassAlreadyExistsException | RuntimeException e) {
+			throw new MojoExecutionException("Failed generating sources", e);
 		}
 	}
 }

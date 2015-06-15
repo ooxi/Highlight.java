@@ -23,16 +23,15 @@
  */
 package com.github.ooxi.highlight.maven.sources;
 
+import com.github.ooxi.highlight.maven.SourceMojo;
+import com.google.common.collect.ImmutableList;
 import com.sun.codemodel.JClassAlreadyExistsException;
-import com.sun.codemodel.JCodeModel;
 import java.io.File;
 import java.io.IOException;
-import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.project.MavenProject;
 
 /**
  * Generates an interface, implementation and enumeration of all `highlight.js'
@@ -41,43 +40,24 @@ import org.apache.maven.project.MavenProject;
  * @author ooxi
  */
 @Mojo(name = "generate-sources", defaultPhase = LifecyclePhase.GENERATE_SOURCES)
-public final class GenerateSourcesMojo extends AbstractMojo {
-	
-	@Parameter(property = "project", readonly = true, required = true)
-	private MavenProject project;
-	
-	@Parameter(alias = "package", required = true)
-	private String pkg;
+public final class GenerateSourcesMojo extends SourceMojo {
 	
 	@Parameter(alias = "generated-sources-directory", defaultValue="${project.build.directory}/generated-sources/highlight", required = true)
 	private File sourceDirectory;
+	
+	public GenerateSourcesMojo() {
+		super(ImmutableList.of(
+			LanguagesSourceGenerator::new,
+			StylesheetsSourceGenerator::new
+		));
+	}
 
 	
 	
 	@Override
 	public void execute() throws MojoExecutionException {
-		
 		try {
-			/* Generate target directory if not existing
-			 */
-			if (!sourceDirectory.exists()) {
-				if (!sourceDirectory.mkdirs()) {
-					throw new MojoExecutionException("Cannot create source directory `"+ sourceDirectory.getAbsolutePath() +"'");
-				}
-			}
-			
-			
-			/* Generate Java sources
-			 */
-			JCodeModel model = new JCodeModel();
-			
-			new LanguagesSourceGenerator(model).generate(pkg);
-			new StylesheetsSourceGenerator(model).generate(pkg);
-			
-			/* @deprecated Charset dependend!
-			 */
-			model.build(sourceDirectory);
-			
+			createSource(sourceDirectory);
 			
 			/* Add directory with generated sources to compile
 			 * source root

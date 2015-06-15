@@ -23,7 +23,10 @@
  */
 package com.github.ooxi.highlight.maven;
 
+import com.github.ooxi.highlight.maven.resources.HighlightResource;
+import com.github.ooxi.highlight.maven.resources.HighlightResources;
 import static com.github.ooxi.highlight.maven.JavaIdentifierSubjectFactory.JAVA_IDENTIFIER;
+import com.github.ooxi.highlight.maven.resources.JavaIdentifier;
 import static com.google.common.truth.Truth.assert_;
 import java.io.IOException;
 import java.util.Collection;
@@ -50,7 +53,8 @@ public class HighlightResourcesTest {
 		Collection<HighlightResource> resources = HighlightResources.getLanguageResources();
 		
 		Collection<String> identifiers = resources.stream()
-			.map(HighlightResource::getJavaIdentifier)
+			.map(HighlightResource::toJavaIdentifier)
+			.map(JavaIdentifier::toEnumerationConstant)
 		.collect(toList());
 		
 		
@@ -65,7 +69,8 @@ public class HighlightResourcesTest {
 		Collection<HighlightResource> resources = HighlightResources.getStylesheetResources();
 		
 		Collection<String> identifiers = resources.stream()
-			.map(HighlightResource::getJavaIdentifier)
+			.map(HighlightResource::toJavaIdentifier)
+			.map(JavaIdentifier::toEnumerationConstant)
 		.collect(toList());
 		
 		assert_().withFailureMessage("Empty `highlight.js' Stylesheet resources")

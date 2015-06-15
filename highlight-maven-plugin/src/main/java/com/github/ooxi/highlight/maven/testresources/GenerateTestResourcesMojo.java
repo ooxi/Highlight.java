@@ -21,46 +21,43 @@
  * 
  *  3. This notice may not be removed or altered from any source distribution.
  */
-package com.github.ooxi.highlight.maven;
+package com.github.ooxi.highlight.maven.testresources;
 
-import org.apache.maven.plugin.AbstractMojo;
+import com.github.ooxi.highlight.maven.ResourceMojo;
+import com.google.common.collect.ImmutableList;
+import java.io.File;
+import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.project.MavenProject;
 
 /**
  *
  * @author ooxi
  */
 @Mojo(name = "generate-test-resources", defaultPhase = LifecyclePhase.GENERATE_TEST_RESOURCES)
-public final class GenerateTestResourcesMojo extends AbstractMojo {
+public final class GenerateTestResourcesMojo extends ResourceMojo {
 	
-	@Parameter(property = "project", readonly = true, required = true)
-	private MavenProject project;
+	@Parameter(alias = "generated-test-resources-directory", defaultValue="${project.build.directory}/generated-test-resources/highlight", required = true)
+	private File resourceDirectory;
 	
-	@Parameter(alias = "package", required = true)
-	private String pkg;
-	
-//	@Parameter(alias = "resourceDirectory", required = true)
-//	private File resourceDirectory;
+	public GenerateTestResourcesMojo() {
+		super(ImmutableList.of(
+			new TestResourceGenerator()
+		));
+	}
 
 	
 	
 	@Override
 	public void execute() throws MojoExecutionException {
-		getLog().warn(getClass().getName());
+		Resource resource = createResource(resourceDirectory);
 		
-		try {
-			
-//			/* XXX
-//			 */
-//			project.addResource(resource);
-//			project.addCompileSourceRoot(resourceDirectory.getAbsolutePath());
+		resource.addInclude("**/*.plain-example");
+		resource.addInclude("**/*.automatically-highlighted-example");
+		resource.addInclude("**/*.manually-highlighted-example");
 
-		} catch (Exception e) {
-			throw new MojoExecutionException("Failed generating resources", e);
-		}
+		project.addTestResource(resource);
 	}
 }

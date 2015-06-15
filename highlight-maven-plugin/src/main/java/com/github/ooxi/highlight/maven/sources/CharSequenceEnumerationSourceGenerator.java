@@ -23,7 +23,8 @@
  */
 package com.github.ooxi.highlight.maven.sources;
 
-import com.github.ooxi.highlight.maven.HighlightResource;
+import com.github.ooxi.highlight.maven.SourceMojo;
+import com.github.ooxi.highlight.maven.resources.HighlightResource;
 import com.sun.codemodel.ClassType;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JCase;
@@ -48,24 +49,26 @@ import java.util.NoSuchElementException;
  * 
  * @author ooxi
  */
-abstract class CharSequenceEnumerationSourceGenerator {
+abstract class CharSequenceEnumerationSourceGenerator implements SourceMojo.Generator {
 	
 	private final JCodeModel model;
+	private final String pkg;
 	
-	public CharSequenceEnumerationSourceGenerator(JCodeModel model) {
+	protected CharSequenceEnumerationSourceGenerator(JCodeModel model, String pkg) {
 		this.model = model;
+		this.pkg = pkg;
 	}
 	
 	
 	
 	protected abstract String getSimpleName();
-	protected abstract Collection<HighlightResource> getResources() throws IOException;
+	protected abstract Collection<HighlightResource> getResources();
 
 	
 		
 	
 	
-	private JDefinedClass generateInterface(String pkg) throws JClassAlreadyExistsException {
+	private JDefinedClass generateInterface() throws JClassAlreadyExistsException {
 		JPackage pkgModel = model._package(pkg);
 		JDefinedClass interfaceModel = pkgModel._class(JMod.PUBLIC, getSimpleName(), ClassType.INTERFACE);
 		
@@ -78,7 +81,10 @@ abstract class CharSequenceEnumerationSourceGenerator {
 	
 	
 	
-	private JMethod generateImplementation(String pkg, JDefinedClass interfaceModel) throws JClassAlreadyExistsException {
+	private JMethod generateImplementation(
+				JDefinedClass interfaceModel
+			) throws JClassAlreadyExistsException {
+		
 		JPackage pkgModel = model._package(pkg);
 		JDefinedClass implementationModel = pkgModel._class(JMod.FINAL, getSimpleName() +"Impl", ClassType.CLASS);
 		
@@ -118,8 +124,12 @@ abstract class CharSequenceEnumerationSourceGenerator {
 	 * @throws JClassAlreadyExistsException iff the enumeration class
 	 *     already exists
 	 */
-	private void generateEnumeration(String pkgName, JClass interfaceClass, JMethod factory) throws IOException, JClassAlreadyExistsException {
-		JPackage pkgModel = model._package(pkgName);
+	private void generateEnumeration(
+				JClass interfaceClass,
+				JMethod factory
+			) throws IOException, JClassAlreadyExistsException {
+		
+		JPackage pkgModel = model._package(pkg);
 		JDefinedClass enumerationModel = pkgModel._class(JMod.PUBLIC | JMod.FINAL, getSimpleName() +"s", ClassType.CLASS);
 		
 		
@@ -154,7 +164,7 @@ abstract class CharSequenceEnumerationSourceGenerator {
 			 */
 			JFieldVar entityField = enumerationModel.field(
 				JMod.PUBLIC | JMod.STATIC | JMod.FINAL, interfaceClass,
-				resource.getJavaIdentifier(),
+				resource.toJavaIdentifier().toEnumerationConstant(),
 				interfaceClass.staticInvoke(factory).arg(resource.getBasename())
 			);
 			
@@ -167,7 +177,7 @@ abstract class CharSequenceEnumerationSourceGenerator {
 			/* case "ONE_C":
 			 *     return ONE_C;
 			 */
-			JCase identifierCase = nameSwitch._case(JExpr.lit(resource.getJavaIdentifier()));
+			JCase identifierCase = nameSwitch._case(JExpr.lit(resource.toJavaIdentifier().toEnumerationConstant()));
 			identifierCase.body()._return(entityField);
 		});
 		
@@ -176,20 +186,6 @@ abstract class CharSequenceEnumerationSourceGenerator {
 		 */
 		JMethod constructor = enumerationModel.constructor(JMod.PRIVATE);
 		constructor.body()._throw(JExpr._new(assertionErrorClass));
-		
-		
-//		/* Implements interface
-//		 */
-//		enumerationModel._implements(interfaceModel);
-//		generateCharSequenceMethods(enumerationModel, JMod.PRIVATE);
-//		
-//		
-//		/* One constant per enumeration
-//		 */
-//		getResources().forEach(resource -> {
-//			JEnumConstant constantModel = enumerationModel.enumConstant(resource.getJavaIdentifier());
-//			constantModel.arg(JExpr.lit(resource.getBasename()));
-//		});
 	}
 	
 	
@@ -286,9 +282,10 @@ abstract class CharSequenceEnumerationSourceGenerator {
 	
 	
 	
-	public final void generate(String pkg) throws IOException, JClassAlreadyExistsException {
-		JDefinedClass interfaceModel = generateInterface(pkg);
-		JMethod factory = generateImplementation(pkg, interfaceModel);
-		generateEnumeration(pkg, interfaceModel, factory);
+	@Override
+	public final void generate() throws IOException, JClassAlreadyExistsException {
+		JDefinedClass interfaceModel = generateInterface();
+		JMethod factory = generateImplementation(interfaceModel);
+		generateEnumeration(interfaceModel, factory);
 	}
 }

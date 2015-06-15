@@ -21,23 +21,20 @@
  * 
  *  3. This notice may not be removed or altered from any source distribution.
  */
-package com.github.ooxi.highlight.maven.resources;
+package com.github.ooxi.highlight.maven.testresources;
 
-import java.util.stream.Stream;
+import static com.google.common.truth.Truth.assert_;
+import org.junit.Test;
 
 /**
  * @author ooxi
  */
-final class StylesheetResourceGenerator extends ResourceGenerator {
-
-	@Override
-	protected String getBasePath() {
-		return "node_modules/highlight.js/styles/";
-	}
-
-	@Override
-	protected Stream<HighlightResource> getResources() {
-		return HighlightResources.getStylesheetResources().stream();
-	}
+public class TestResourcesTest {
 	
+	
+	@Test
+	public void testNotEmpty() {
+		assert_().withFailureMessage("Test resources are empty")
+			.that(TestResources.getTestResources()).isNotEmpty();
+	}
 }

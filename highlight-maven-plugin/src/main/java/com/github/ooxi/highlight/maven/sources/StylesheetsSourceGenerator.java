@@ -23,10 +23,9 @@
  */
 package com.github.ooxi.highlight.maven.sources;
 
-import com.github.ooxi.highlight.maven.HighlightResource;
-import com.github.ooxi.highlight.maven.HighlightResources;
+import com.github.ooxi.highlight.maven.resources.HighlightResource;
+import com.github.ooxi.highlight.maven.resources.HighlightResources;
 import com.sun.codemodel.JCodeModel;
-import java.io.IOException;
 import java.util.Collection;
 
 /**
@@ -35,10 +34,11 @@ import java.util.Collection;
  * @author ooxi
  */
 final class StylesheetsSourceGenerator extends CharSequenceEnumerationSourceGenerator {
-	
-	public StylesheetsSourceGenerator(JCodeModel model) {
-		super(model);
+
+	public StylesheetsSourceGenerator(JCodeModel model, String pkg) {
+		super(model, pkg);
 	}
+	
 	
 	
 	@Override
@@ -47,7 +47,7 @@ final class StylesheetsSourceGenerator extends CharSequenceEnumerationSourceGene
 	}
 	
 	@Override
-	protected Collection<HighlightResource> getResources() throws IOException {
+	protected Collection<HighlightResource> getResources() {
 		return HighlightResources.getStylesheetResources();
 	}
 

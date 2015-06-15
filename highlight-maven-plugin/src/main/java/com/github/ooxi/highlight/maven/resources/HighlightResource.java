@@ -23,21 +23,50 @@
  */
 package com.github.ooxi.highlight.maven.resources;
 
-import java.util.stream.Stream;
+import com.google.auto.value.AutoValue;
+import java.io.IOException;
+import java.io.InputStream;
+import org.apache.commons.io.FilenameUtils;
 
 /**
- * @author ooxi
+ * @author ooix
  */
-final class StylesheetResourceGenerator extends ResourceGenerator {
-
-	@Override
-	protected String getBasePath() {
-		return "node_modules/highlight.js/styles/";
-	}
-
-	@Override
-	protected Stream<HighlightResource> getResources() {
-		return HighlightResources.getStylesheetResources().stream();
+@AutoValue
+public abstract class HighlightResource {
+	
+	
+	public static HighlightResource of(ContentSupplier contentSupplier, String path) {
+		return new AutoValue_HighlightResource(contentSupplier, path);
 	}
 	
+	
+	protected abstract ContentSupplier getContentSupplier();
+	public abstract String getPath();
+	
+	
+	public final InputStream openStream() throws IOException {
+		return getContentSupplier().openStream();
+	}
+	
+	public final String getBasename() {
+		return FilenameUtils.getBaseName(getPath());
+	}
+	
+	public final JavaIdentifier toJavaIdentifier() {
+		return JavaIdentifier.of(getBasename());
+	}
+	
+	
+	
+	
+	
+	public static interface ContentSupplier {
+		
+		public InputStream openStream() throws IOException;
+	}
+	
+	
+	
+	HighlightResource() {
+	}
 }

@@ -23,7 +23,7 @@
  */
 package com.github.ooxi.highlight;
 
-import com.google.common.io.ByteStreams;
+import com.github.ooxi.highlight.Guava.ByteStreams;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
@@ -101,7 +101,24 @@ final class Environment implements EnvironmentBinding {
 			
 			pw.println("})();");
 		}
-		return sw.toString();
+		final String s = sw.toString();
+		
+//		/*
+//		 */
+//		String hotfix = s.replace("  function testRe(re, lexeme) {", new StringBuilder()
+//			.append("  function testRe(re, lexeme) {\n")
+//			.append("    try {\n")
+//			.append("      return originalTestRe(re, lexeme);")
+//			.append("    } catch (e) {\n")
+//			.append("       print(e);\n")
+//			.append("       return null;\n")
+//			.append("    }\n")
+//			.append("  }\n")
+//			.append("\n")
+//			.append("  function originalTestRe(re, lexeme) {")
+//		.toString());
+		
+		return s;
 	}
 	
 	

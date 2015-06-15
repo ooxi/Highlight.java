@@ -21,48 +21,34 @@
  * 
  *  3. This notice may not be removed or altered from any source distribution.
  */
-package com.github.ooxi.highlight.maven;
+package com.github.ooxi.highlight.maven.resources;
 
-import com.google.auto.value.AutoValue;
-import java.net.URL;
-import org.apache.commons.io.FilenameUtils;
+import static com.github.ooxi.highlight.maven.JavaIdentifierSubjectFactory.JAVA_IDENTIFIER;
+import static com.google.common.truth.Truth.assert_;
+import org.junit.Test;
 
 /**
- * @author ooix
+ * @author ooxi
  */
-@AutoValue
-public abstract class HighlightResource {
+public class JavaIdentifierTest {
 	
 	
-	public static HighlightResource of(URL url, String path) {
-		return new AutoValue_HighlightResource(url, path);
+	@Test
+	public void testConstant() {
+		final JavaIdentifier TEST = JavaIdentifier.of("a-test-identifier");
+		final String actual = TEST.toEnumerationConstant();
+		
+		assert_().that(actual).isEqualTo("A_TEST_IDENTIFIER");
+		assert_().about(JAVA_IDENTIFIER).that(actual).isJavaIdentifier();
 	}
 	
 	
-	public abstract URL getUrl();
-	public abstract String getPath();
-	
-	public final String getBasename() {
-		return FilenameUtils.getBaseName(getUrl().toString());
-	}
-	
-	public final String getJavaIdentifier() {
+	@Test
+	public void testClassName() {
+		final JavaIdentifier TEST = JavaIdentifier.of("a--test-identifier-");
+		final String actual = TEST.toClassName();
 		
-		/* @see HighlightResourcesTest
-		 */
-		final String identifier = getBasename()
-			.toUpperCase()
-			.replace('-', '_')
-			.replace('.', '_');
-		
-		if ("1C".equals(identifier)) {
-			return "ONE_C";
-		}
-		
-		return identifier;
-	}
-	
-	
-	HighlightResource() {
+		assert_().that(actual).isEqualTo("ATestIdentifier");
+		assert_().about(JAVA_IDENTIFIER).that(actual).isJavaIdentifier();
 	}
 }

@@ -30,10 +30,13 @@
 
 	<!--
 	 | 0.0.1 - Initial public release
+	 | 0.0.2 - `highlight.js' test resources are downloaded from
+	 |         `https://highlightjs.org/static/demo/'
+	 |       - Java test resources are generated
 	-->
 	<groupId>com.github.ooxi.highlight</groupId>
 	<artifactId>highlight-maven-plugin</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<packaging>maven-plugin</packaging>
 
 	<url>https://github.com/ooxi/Highlight.java</url>
@@ -77,6 +80,15 @@
 		</dependency>
 		
 		<!--
+		 | ImmutableList
+		-->
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>18.0</version>
+		</dependency>
+		
+		<!--
 		 | Maven plugin environment
 		-->
 		<dependency>
@@ -114,13 +126,13 @@
 		</dependency>
 
 		<!--
-		 | JUnit & assert_
+		 | JUnit & assert_ (used at runtime for code generation
+		 | reference)
 		-->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.12</version>
-			<scope>test</scope>
 		</dependency>
 		
 		<dependency>
